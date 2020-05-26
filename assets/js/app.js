@@ -160,7 +160,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         .offset([80, -60])
         .html(function (d) {
             return (`${d.state}<br>${Xlabel} ${d[chosenXAxis]}<br>
-        ${Ylabel} ${chosenYAxis}`);
+        ${Ylabel} ${[chosenYAxis]}`);
         });
 
     circlesGroup.call(toolTip);
@@ -207,9 +207,9 @@ d3.csv("../../assets/data/data.csv").then(function (censusDataSet, err) {
         .call(bottomAxis);
 
     // append y axis
-    chartGroup.append("g")
+    var yAxis = chartGroup.append("g")
         .classed("y-axis", true)
-        .attr("transform", "rotate(-90")
+        // .attr("transform", "rotate(-90")
         .call(leftAxis);
 
     // ************************************
@@ -236,10 +236,10 @@ d3.csv("../../assets/data/data.csv").then(function (censusDataSet, err) {
     // ************************************
 
     //  text for the circles
-    //     circlesGroup.append("text")
-    //         .attr("dx", function (chosenXAxis) { return -20 })
-    //         .text(function (d) { return d.label })
-    // })
+    // circlesGroup.append("text")
+    //     // .attr("dx", function (chosenXAxis) { return -20 })
+    //     .text(function (d) { return d.state })
+    // });
 
     // Create group for two x-axis labels
     var XlabelsGroup = chartGroup.append("g")
@@ -250,14 +250,14 @@ d3.csv("../../assets/data/data.csv").then(function (censusDataSet, err) {
         .attr("y", 20)
         .attr("value", "poverty") // value to grab for event listener
         .classed("active", true)
-        .text("Poverty Rate");
+        .text("Poverty Rate (%)");
 
     var incomeLabel = XlabelsGroup.append("text")
         .attr("x", 0)
         .attr("y", 40)
         .attr("value", "income") // value to grab for event listener
         .classed("inactive", true)
-        .text("Income");
+        .text("Income ($USD)");
 
 
     // ************************************
@@ -290,15 +290,15 @@ d3.csv("../../assets/data/data.csv").then(function (censusDataSet, err) {
 
     var smokesLabel = YlabelsGroup.append("text")
         .attr("y", 0 - margin.left)
-        .attr("x", 0 - (height / 4))
-        .attr("dy", "1em")
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "2em")
         .attr("value", "smokes") // value to grab for event listener
         .classed("active", true)
         .text("Smokes");
 
 
     // updateToolTip function above csv import
-    var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+    var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
     // x axis labels event listener
     XlabelsGroup.selectAll("text")
