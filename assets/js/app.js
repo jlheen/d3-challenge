@@ -212,26 +212,56 @@ d3.csv("../../assets/data/data.csv").then(function (censusDataSet, err) {
     // similar: https://stackoverflow.com/questions/20644415/d3-appending-text-to-a-svg-rectangle
     // ************************************
 
-    // append INITIAL circles
-    var circlesGroup = chartGroup.selectAll("circle")
+    var circlesGroup = svg.selectAll("g circle class")
         .data(censusDataSet)
-        .enter()
-        .append("circle")
+        .enter();
+
+    circlesGroup.append("circle")
         .attr("cx", d => xLinearScale(d[chosenXAxis]))
         .attr("cy", d => yLinearScale(d[chosenYAxis]))
         .attr("r", 15)
         .attr("fill", "#339DFF")
         .attr("opacity", ".3");
 
-    // ************************************
-    // !!! ST Abbrs on circles
-    // ************************************
 
-    //  text for the circles
-    // circlesGroup.append("text")
-    //     // .attr("dx", function (chosenXAxis) { return -20 })
-    //     .text(function (d) { return d.state })
-    // });
+    circlesGroup.append("text")
+        .text(d => d.abbr)
+        .attr("font-size", "13px")
+        .attr("text-anchor", "middle");
+
+    // ************************************
+    // !!! 
+    // code source: https://www.freecodecamp.org/learn/data-visualization/data-visualization-with-d3/add-labels-to-scatter-plot-circles
+    // ************************************
+ // .attr("fill", "white")
+        // .attr("font-size", "10px");
+
+    // append INITIAL circles
+    // var circlesGroup = chartGroup.selectAll("circle")
+    //     .data(censusDataSet)
+    //     .enter()
+    //     .append("circle")
+    //     // .append("text")
+    //     // .text(d => d.abbr)
+    //     .attr("cx", d => xLinearScale(d[chosenXAxis]))
+    //     .attr("cy", d => yLinearScale(d[chosenYAxis]))
+    //     .attr("r", 15)
+    //     .attr("fill", "#339DFF")
+    //     .attr("opacity", ".3");
+
+    // // ************************************
+    // // !!! 
+    // // code source: https://www.freecodecamp.org/learn/data-visualization/data-visualization-with-d3/add-labels-to-scatter-plot-circles
+    // // ************************************
+
+    // d3.selectAll
+    //     .append("circle")
+    //     // .text(d => d.abbr)
+    //     .attr("cx", d => xLinearScale(d[chosenXAxis]))
+    //     .attr("cy", d => yLinearScale(d[chosenYAxis]));
+    //     // .attr("fill", "white")
+    //     // .attr("font-size", "10px");
+
 
     // Create group for two x-axis labels
     var XlabelsGroup = chartGroup.append("g")
