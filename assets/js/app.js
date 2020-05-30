@@ -78,7 +78,8 @@ function yScale(censusDataSet, chosenYAxis) {
     // create scales
 
     var yLinearScale = d3.scaleLinear()
-        .domain([0, d3.max(censusDataSet, d => d[chosenYAxis])])
+        .domain([d3.min(censusDataSet, d => d[chosenYAxis]) * 0.8, 
+        d3.max(censusDataSet, d => d[chosenYAxis]) * 1.2])
         .range([height, 0]);
 
     return yLinearScale;
@@ -118,18 +119,32 @@ function renderCirclesY(circlesGroup, chosenYAxis, newYscale) {
     return circlesGroup;
 }
 
-// circlesGroup = renderCirclesX(circlesGroup, chosenXAxis, newXscale);
+// update text witin circles for X-axis
+function renderCirclesTextX(circlesGroup, chosenXAxis, newXscale) {
+    
+    circlesGroup.transition()
+        .duration(500)
+        .attr("x", d => newXscale(d[chosenXAxis]))
+
+    return circlesGroup;
+}
+// update text witin circles for Y-axis
+function renderCirclesTextY(circlesGroup, chosenYAxis, newYscale) {
+    
+    circlesGroup.transition()
+        .duration(500)
+        .attr("y", d => newYscale(d[chosenYAxis]));
+
+    return circlesGroup;
+}
 
 // function used for updating circles group with new tooltip
 function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
+    console.log(chosenYAxis)
+
     var Xlabel;
     var Ylabel;
-
-    // ******************************
-    // !!!Update Tooltip
-    // multiple if conditionals or SWITCH statement
-    // ******************************
 
     // conditions for X-Axes
 
@@ -137,16 +152,16 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         Xlabel = "Poverty (%):";
     }
     else {
-        Xlabel = "Income";
+        Xlabel = "Income:";
     }
 
     // conditions for Y-Axes
 
     if (chosenYAxis === "healthcare") {
-        Ylabel = "Healthcare";
+        Ylabel = "Healthcare:";
     }
     else {
-        Ylabel = "Smokes";
+        Ylabel = "Smokes:";
     }
 
     var toolTip = d3.tip()
@@ -223,15 +238,15 @@ d3.csv("../../assets/data/data.csv").then(function (censusDataSet, err) {
         .attr("fill", "#339DFF")
         .attr("opacity", ".3");
 
-    // ************************************
-    // !!! ST Abbrs on circles
-    // ************************************
-
     //  text for the circles
-    // circlesGroup.append("text")
-    //     // .attr("dx", function (chosenXAxis) { return -20 })
-    //     .text(function (d) { return d.state })
-    // });
+    var circlesText = chartGroup.selectAll()
+        .data(censusDataSet)
+        .enter()
+        .append("text")
+        .attr("x", d => (xLinearScale(d[chosenXAxis]) - 10))
+        .attr("y", d => (yLinearScale(d[chosenYAxis]) + 5))
+        .text(d => d.abbr)
+        .attr("font-size", "12px")
 
     // Create group for two x-axis labels
     var XlabelsGroup = chartGroup.append("g")
@@ -295,20 +310,12 @@ d3.csv("../../assets/data/data.csv").then(function (censusDataSet, err) {
                 // updates x axis with transition
                 xAxis = renderXAxes(xLinearScale, xAxis);
 
-                // updates circles with new x values
+                // updates circles with new x values and text
                 circlesGroup = renderCirclesX(circlesGroup, chosenXAxis, newXscale);
+                circlesText = renderCirclesTextX(circlesText, chosenXAxis, newXscale);
                 
                 // updates tooltips with new info
                 circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
-
-                // possible options: poverty + healthcare
-                // poverty + smokes
-
-                // income + healthcare
-                // income + smokes
-
-                // function: which axes is on + which text was clicked
-
 
                 // changes classes to change bold text
                 if (chosenXAxis == "poverty") {
@@ -356,11 +363,12 @@ d3.csv("../../assets/data/data.csv").then(function (censusDataSet, err) {
                 // updates x axis with transition
                 yAxis = renderYAxes(yLinearScale, yAxis);
 
-                // updates circles with new x values
+                // updates circles with new y values and text
                 circlesGroup = renderCirclesY(circlesGroup, chosenYAxis, newYscale);
+                circlesText = renderCirclesTextY(circlesText, chosenYAxis, newYscale);
 
                 // updates tooltips with new info
-                circlesGroup = updateToolTip(chosenYAxis, chosenXAxis, circlesGroup);
+                circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
                 // changes classes to change bold text
                 if (chosenYAxis == "healthcare") {
