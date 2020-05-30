@@ -219,15 +219,7 @@ d3.csv("../../assets/data/data.csv").then(function (censusDataSet, err) {
         .classed("y-axis", true)
         .call(leftAxis);
 
-    // ************************************
-    // TO DO: UPDATE CIRCLES
-    // default setting is state showing on the circles
-    // what for the mouseover event -- the data points
-    // ONE POSSIBLE SOLUTION: https://stackoverflow.com/questions/13615381/d3-add-text-to-circle -- would this mean I need to update the circles with a separate function for the text?
-    // similar: https://stackoverflow.com/questions/20644415/d3-appending-text-to-a-svg-rectangle
-    // ************************************
-
-    // append INITIAL circles
+    // append initial circles
     var circlesGroup = chartGroup.selectAll("circle")
         .data(censusDataSet)
         .enter()
@@ -243,7 +235,7 @@ d3.csv("../../assets/data/data.csv").then(function (censusDataSet, err) {
         .data(censusDataSet)
         .enter()
         .append("text")
-        .attr("x", d => (xLinearScale(d[chosenXAxis]) - 10))
+        .attr("x", d => (xLinearScale(d[chosenXAxis]) - 8.5))
         .attr("y", d => (yLinearScale(d[chosenYAxis]) + 5))
         .text(d => d.abbr)
         .attr("font-size", "12px")
@@ -256,7 +248,6 @@ d3.csv("../../assets/data/data.csv").then(function (censusDataSet, err) {
         .attr("x", 0)
         .attr("y", 20)
         .attr("value", "poverty") // value to grab for event listener
-        // .classed("active", true)
         .attr("class", "active")
         .text("Poverty Rate (%)");
 
@@ -291,6 +282,10 @@ d3.csv("../../assets/data/data.csv").then(function (censusDataSet, err) {
     var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
     
+    // *****************************
+    // Create X Labels Event Listener
+    // *****************************
+
     // x axis labels event listener
     XlabelsGroup.selectAll("text")
         .on("click", function () {
